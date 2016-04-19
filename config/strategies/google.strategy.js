@@ -11,7 +11,7 @@ module.exports = function() {
         clientID: googleKeys.clientID,
         clientSecret: googleKeys.clientSecret,
         callbackURL: 'http://localhost:3000/auth/google/callback'},
-        function(req, accessToken, refreshToken, profile, done){
+        function(req, accessToken, refreshToken, profile, done) {
             var user = {};
 
             user.email = profile.emails[0].value;

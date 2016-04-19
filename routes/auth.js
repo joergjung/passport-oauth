@@ -30,5 +30,19 @@ router.route('/twitter/callback')
 router.route('/twitter')
     .get(passport.authenticate('twitter'));
 
+
+// facebook
+router.route('/facebook/callback')
+    // use twitter strategy
+    .get(passport.authenticate('facebook', { 
+        successRedirect: '/users/',
+        failure: '/error/'
+    }));
+
+router.route('/facebook')
+    .get(passport.authenticate('facebook', {
+        scope: ['email']
+    }));
+
 module.exports = router;
 

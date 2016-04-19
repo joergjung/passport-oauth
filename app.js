@@ -7,26 +7,15 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var session = require('express-session');
 
-// store API credentials in separate file (add that file to .gitignore)
-// googleKeys.clientID
-// googleKeys.clientSecret
-var googleKeys = require('./keys/google');
+
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var auth = require('./routes/auth');
 
 var app = express();
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
-passport.use(new GoogleStrategy({
-        clientID: googleKeys.clientID,
-        clientSecret: googleKeys.clientSecret,
-        callbackURL: 'http://localhost:3000/auth/google/callback'},
-        function(req, accessToken, refreshToken, profile, done){
-            done(null, profile);
-        }
-));
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -41,17 +30,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({secret: 'anything'}));
 
-app.use(passport.initialize());
-app.use(passport.session());
+require('./config/passport')(app);
 
-// serializeuser = place a user object into the session
-passport.serializeUser(function(user, done){
-    done(null, user);
-});
 
-passport.deserializeUser(function(user, done){
-    done(null, user);
-});
 
 app.use('/', routes);
 app.use('/users', users);

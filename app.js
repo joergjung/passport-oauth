@@ -1,44 +1,41 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
+var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var passport = require('passport');
 var session = require('express-session');
 
+// store API credentials in separate file (add that file to .gitignore)
+// googleKeys.clientID
+// googleKeys.clientSecret
+var googleKeys = require('./keys/google');
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var auth = require('./routes/auth');
 
-// store API credentials in separate file (add that file to .gitignore)
-// googleKeys.clientID
-// googleKeys.clientSecret
-// googleKeys.callbackUrl
-var googleKeys = require('./keys/google');
-
 var app = express();
-
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
 passport.use(new GoogleStrategy({
-    clientID: googleKeys.clientID,
-    clientSecret: googleKeys.clientSecret,
-    callbackURL: googleKeys.callbackUrl},
-    function(req, accessToken, refreshToken, profile, done) {
-        done(null, profile);
-    }
+        clientID: googleKeys.clientID,
+        clientSecret: googleKeys.clientSecret,
+        callbackURL: 'http://localhost:3000/auth/google/callback'},
+        function(req, accessToken, refreshToken, profile, done){
+            done(null, profile);
+        }
 ));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -48,11 +45,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // serializeuser = place a user object into the session
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function(user, done){
     done(null, user);
 });
 
-passport.deserializeUser(function(user, done) {
+passport.deserializeUser(function(user, done){
     done(null, user);
 });
 
@@ -60,14 +57,14 @@ app.use('/', routes);
 app.use('/users', users);
 app.use('/auth', auth);
 
-// catch 404 and forward to error handler
+/// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
 
-// error handlers
+/// error handlers
 
 // development error handler
 // will print stacktrace
@@ -90,5 +87,6 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
+
 
 module.exports = app;

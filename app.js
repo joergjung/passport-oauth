@@ -7,15 +7,11 @@ var bodyParser = require('body-parser');
 var passport = require('passport');
 var session = require('express-session');
 
-
-
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var auth = require('./routes/auth');
 
 var app = express();
-
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -31,8 +27,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({secret: 'anything'}));
 
 require('./config/passport')(app);
-
-
 
 app.use('/', routes);
 app.use('/users', users);
@@ -68,6 +62,5 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
-
 
 module.exports = app;

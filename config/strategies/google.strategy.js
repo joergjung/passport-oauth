@@ -12,7 +12,19 @@ module.exports = function() {
         clientSecret: googleKeys.clientSecret,
         callbackURL: 'http://localhost:3000/auth/google/callback'},
         function(req, accessToken, refreshToken, profile, done){
-            done(null, profile);
+            var user = {};
+
+            user.email = profile.emails[0].value;
+            user.image = profile._json.image.url;
+            user.displayName = profile.displayName;
+            user.photo = profile._json.cover.coverPhoto.url;
+
+            user.google = {};
+            user.google.id = profile.id;
+            user.google.token = accessToken;
+
+            // add user to account
+            done(null, user);
         }
     ));
 };

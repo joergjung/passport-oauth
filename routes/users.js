@@ -13,11 +13,8 @@ router.use('/', function(req, res, next) {
 // GET users listing
 router.get('/', function(req, res) {
 	// when signed in, passport will automatically add the user object to the request object
-	// render the user template 
-	res.render('users', {user: {name: req.user.displayName,
-                                image: req.user.image,
-								photo: req.user.photo
-	}});
+	// render the users template 
+	res.render('users', {user: req.user});
 });
 
 module.exports = router;

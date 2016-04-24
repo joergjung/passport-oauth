@@ -33,7 +33,7 @@ router.route('/twitter')
 
 // facebook
 router.route('/facebook/callback')
-    // use twitter strategy
+    // use facebook strategy
     .get(passport.authenticate('facebook', { 
         successRedirect: '/users/',
         failure: '/error/'
